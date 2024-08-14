@@ -1,0 +1,22 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.BirBilsen" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="materialSwitchStyle">@style/Widget.App.Switch</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+
+    </style>
+
+
+    <style name="Widget.App.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Switch</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Switch" parent="">
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorSurfaceVariant">@color/green</item>
+    </style>
+
+    <style name="Theme.BirBilsen" parent="Base.Theme.BirBilsen" />
+</resources>

@@ -1,0 +1,119 @@
+{
+  "project_info": {
+    "project_number": "327779518106",
+    "firebase_url": "https://quiz-ef23c.firebaseio.com",
+    "project_id": "quiz-ef23c",
+    "storage_bucket": "quiz-ef23c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327779518106:android:9af9b29bfae24574b20123",
+        "android_client_info": {
+          "package_name": "com.bilenbilir.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "327779518106-9jfh23e830j8vvekfeahdtb89v7cfedo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3LUYhWZkQqYCqnyCSYPruUq1dEYrHeKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "327779518106-9jfh23e830j8vvekfeahdtb89v7cfedo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "327779518106-5r938519b2f42um9orgkkpqnedpga3mt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.app.Quiz"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327779518106:android:788f35d7e2de1f66b20123",
+        "android_client_info": {
+          "package_name": "com.birbilsen.birbilsen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "327779518106-9jfh23e830j8vvekfeahdtb89v7cfedo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3LUYhWZkQqYCqnyCSYPruUq1dEYrHeKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "327779518106-9jfh23e830j8vvekfeahdtb89v7cfedo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "327779518106-5r938519b2f42um9orgkkpqnedpga3mt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.app.Quiz"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327779518106:android:de1546f2752e218db20123",
+        "android_client_info": {
+          "package_name": "com.ynemreuslu.birbilsen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "327779518106-9jfh23e830j8vvekfeahdtb89v7cfedo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3LUYhWZkQqYCqnyCSYPruUq1dEYrHeKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "327779518106-9jfh23e830j8vvekfeahdtb89v7cfedo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "327779518106-5r938519b2f42um9orgkkpqnedpga3mt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.app.Quiz"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

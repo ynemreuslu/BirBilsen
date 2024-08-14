@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/entryScreen">
+
+    <fragment
+        android:id="@+id/entryScreen"
+        android:name="com.ynemreuslu.birbilsen.screen.entry.EntryScreen"
+        android:label="fragment_entry_screen"
+        app:popUpToInclusive="true"
+        tools:layout="@layout/fragment_entry_screen">
+        <action
+            android:id="@+id/action_entryScreen_to_playScreen"
+            app:destination="@id/playScreen" />
+        <action
+            android:id="@+id/action_entryScreen_to_settingsScreen"
+            app:destination="@id/settingsScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsScreen"
+        android:name="com.ynemreuslu.birbilsen.screen.settings.SettingsScreen"
+        android:label="fragment_settings_screen"
+        tools:layout="@layout/fragment_settings_screen" />
+    <fragment
+        android:id="@+id/playScreen"
+        android:name="com.ynemreuslu.birbilsen.screen.play.PlayScreen"
+        android:label="fragment_play_screen"
+        tools:layout="@layout/fragment_play_screen" />
+    <fragment
+        android:id="@+id/networkControllerScreen"
+        android:name="com.ynemreuslu.birbilsen.screen.network.NetworkControllerScreen"
+        android:label="fragment_network_controller_screen"
+        app:popUpToInclusive="true"
+        tools:layout="@layout/fragment_network_controller_screen" >
+        <action
+            android:id="@+id/action_networkControllerScreen_to_entryScreen"
+            app:popUpToInclusive="true"
+            app:destination="@id/entryScreen" />
+    </fragment>
+</navigation>
