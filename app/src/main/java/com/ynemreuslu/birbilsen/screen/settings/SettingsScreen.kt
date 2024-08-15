@@ -1,19 +1,25 @@
 package com.ynemreuslu.birbilsen.screen.settings
 
+import android.app.Activity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
+import com.google.android.play.core.review.ReviewException
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.android.play.core.review.model.ReviewErrorCode
+import com.google.android.play.core.review.testing.FakeReviewManager
 import com.ynemreuslu.birbilsen.databinding.FragmentSettingsScreenBinding
-
 
 
 class SettingsScreen : Fragment() {
@@ -45,7 +51,10 @@ class SettingsScreen : Fragment() {
             requireActivity().getSharedPreferences("app_settings", Context.MODE_PRIVATE)
         initAdView()
         switchOnVoice()
+        sharedFriendsLinkApp()
+        appLinksButtons()
         backButton()
+
     }
 
     private fun initAdView() {
@@ -98,30 +107,57 @@ class SettingsScreen : Fragment() {
 
     private fun sharedFriendsLinkApp() {
         binding.settingsScreenShare.setOnClickListener {
-            TODO()
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "This is my text to send.")
+                type = "text/plain"
+            }
+
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
         }
     }
 
-//    private fun appLinksButtons() {
-//        binding.settingsPoint.setOnClickListener {
-//            val manager = ReviewManagerFactory.create(requireContext())
-//            binding.settingsPoint.setOnClickListener {
-//                val request = manager.requestReviewFlow()
-//                request.addOnCompleteListener { task ->
-//                    if (task.isSuccessful) {
-//                        // We got the ReviewInfo object
-//                        val reviewInfo = task.result
-//                    } else {
-//                        // There was some problem, log or handle the error code.
-//                        @ReviewErrorCode val reviewErrorCode = (task.getException() as ReviewException).errorCode
-//                    }
-//                }
-//            }
-//
-//
-//
-//        }
-//    }
+    private fun appLinksButtons() {
+        binding.settingsScreenPoint.setOnClickListener {
+            val manager = ReviewManagerFactory.create(requireContext())
+            val request = manager.requestReviewFlow()
+            request.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val reviewInfo = task.result
+                    val flow = manager.launchReviewFlow(requireActivity(), reviewInfo)
+                    flow.addOnCompleteListener {
+
+                    }
+                } else {
+                    // There was some problem, log or handle the error code.
+                    @ReviewErrorCode val reviewErrorCode = (task.exception as ReviewException).errorCode
+                }
+            }
+        }
+    }
+
+    fun Activity.launchInAppReview(
+        onComplete: (() -> Unit)? = null,
+    ) {
+        val reviewManager = ReviewManagerFactory.create(this)
+        val request = reviewManager.requestReviewFlow()
+        request.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val reviewInfo = task.result
+                val flow = reviewManager.launchReviewFlow(this, reviewInfo)
+                flow.addOnCompleteListener {
+                    // The flow has finished. The API doesn't indicate whether the user
+                    // reviewed or not, or even whether the review dialog was shown.
+                    // Therefore, no matter the result, continue with your app's flow.
+                    onComplete?.invoke()
+                }
+            } else {
+                // Log or handle error if you want to
+                onComplete?.invoke()
+            }
+        }
+    }
 
 
     override fun onDestroyView() {

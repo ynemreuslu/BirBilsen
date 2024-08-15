@@ -53,7 +53,7 @@ class EntryScreenViewModel(
     }
 
 
-    private fun fetchQuestionsFromFirebase() {
+     fun fetchQuestionsFromFirebase() {
         questionsDatabaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val questionList = ArrayList<Question>()

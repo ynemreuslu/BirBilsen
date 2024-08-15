@@ -43,13 +43,13 @@ class EntryScreen : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentEntryScreenBinding.inflate(inflater, container, false)
-//        loadBannerAd()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setButtonListeners()
+        viewModel.fetchQuestionsFromFirebase()
         loadBannerAd()
 
     }

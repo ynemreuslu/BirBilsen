@@ -99,10 +99,8 @@ class PlayScreen : Fragment() {
     }
 
     private fun handleButtonCorrectAnswer() {
-        val currentQuestionsIndex: Int
         do {
             currentQuestionIndex = Random.nextInt(0, 598)
-
         } while (askedQuestions.contains(currentQuestionIndex))
 
         askedQuestions.add(currentQuestionIndex)
@@ -110,19 +108,9 @@ class PlayScreen : Fragment() {
         val questions = playViewModel.questions.value
         if (currentQuestionIndex < questions!!.size) {
             CoroutineScope(Dispatchers.Main).launch {
-                if (askedQuestions.size % 7 == 0) {
-                    showInterstitial()
-                    loadAd()
-                    delay(500)
-                    updateUIWithCurrentQuestion(currentQuestionIndex, questions)
-                    resetAnswerButtonsColors()
-                } else {
-                    delay(500)
-                    updateUIWithCurrentQuestion(currentQuestionIndex, questions)
-                    resetAnswerButtonsColors()
-                }
-
-
+                delay(500)
+                updateUIWithCurrentQuestion(currentQuestionIndex, questions)
+                resetAnswerButtonsColors()
             }
         }
     }
