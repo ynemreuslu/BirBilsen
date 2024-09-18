@@ -10,19 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.ynemreuslu.birbilsen.R
 import com.ynemreuslu.birbilsen.data.Question
-import com.ynemreuslu.birbilsen.data.Voice
 import com.ynemreuslu.birbilsen.databinding.FragmentPlayScreenBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,15 +28,12 @@ class PlayScreen : Fragment() {
 
     private var _binding: FragmentPlayScreenBinding? = null
     private val binding get() = _binding!!
-    private lateinit var playViewModel: PlayViewModel
+    private val viewModel: PlayScreenViewModel by viewModels { PlayScreenViewModel.Factory }
     private lateinit var correctAnswer: String
     private lateinit var answerButtons: Array<Button>
-    private lateinit var voice: Voice
     private var currentQuestionIndex: Int = Random.nextInt(0, 598)
     private val askedQuestions = HashSet<Int>()
     private lateinit var sharedPref: SharedPreferences
-    private var mInterstitialAd: InterstitialAd? = null
-
 
 
     override fun onCreateView(
@@ -55,26 +45,21 @@ class PlayScreen : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        playViewModel.startCounterTimer()
+        viewModel.startCounterTimer()
     }
 
     override fun onStop() {
         super.onStop()
-        playViewModel.cancelCountdownTimer()
+        viewModel.cancelCountdownTimer()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        voice = Voice(requireContext(), requireActivity())
-        playViewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
-        )[PlayViewModel::class.java]
 
-        playViewModel.questions.observe(viewLifecycleOwner) {
+        viewModel.questions.observe(viewLifecycleOwner) {
             initializeGame(it!!)
         }
-        playViewModel.progress.observe(viewLifecycleOwner) {
+        viewModel.progress.observe(viewLifecycleOwner) {
             binding.playScreenProgressBar.progress = it
             binding.playScreenProgressBarTextView.text = it.toString()
             backToEntry(it)
@@ -83,7 +68,7 @@ class PlayScreen : Fragment() {
 
         initAnswerButtons()
         setBackButtonClickListener()
-        playViewModel.startCountdownTimer()
+        viewModel.startCountdownTimer()
         MobileAds.initialize(requireContext())
 
 
@@ -105,56 +90,13 @@ class PlayScreen : Fragment() {
 
         askedQuestions.add(currentQuestionIndex)
 
-        val questions = playViewModel.questions.value
+        val questions = viewModel.questions.value
         if (currentQuestionIndex < questions!!.size) {
             CoroutineScope(Dispatchers.Main).launch {
                 delay(500)
                 updateUIWithCurrentQuestion(currentQuestionIndex, questions)
                 resetAnswerButtonsColors()
             }
-        }
-    }
-
-    private fun loadAd() {
-        val adRequest = AdRequest.Builder().build()
-        InterstitialAd.load(
-            requireContext(),
-            "ca-app-pub-5990820577037460/8549360627",
-            adRequest,
-            object : InterstitialAdLoadCallback() {
-                override fun onAdFailedToLoad(p0: LoadAdError) {
-                    mInterstitialAd = null
-                }
-
-                override fun onAdLoaded(p0: InterstitialAd) {
-                    super.onAdLoaded(p0)
-                    mInterstitialAd = p0
-
-                }
-            })
-    }
-
-    private fun showInterstitial() {
-        playViewModel.cancelCountdownTimer()
-        if (mInterstitialAd != null) {
-            mInterstitialAd?.fullScreenContentCallback =
-                object : FullScreenContentCallback() {
-                    override fun onAdDismissedFullScreenContent() {
-                        mInterstitialAd = null
-                        loadAd()
-                        playViewModel.startCounterTimer()
-                    }
-
-                    override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                        mInterstitialAd = null
-                        playViewModel.startCounterTimer()
-                    }
-
-                    override fun onAdShowedFullScreenContent() {
-                        // Called when ad is dismissed.
-                    }
-                }
-            mInterstitialAd?.show(requireActivity())
         }
     }
 
@@ -178,8 +120,8 @@ class PlayScreen : Fragment() {
         if (answerButtons[index].text == correctAnswer) {
             answerButtons[index].setBackgroundColor(correctAnswerTrueColor())
             handleButtonCorrectAnswer()
-            playViewModel.cancelCountdownTimer()
-            playViewModel.startCountdownTimer()
+            viewModel.cancelCountdownTimer()
+            viewModel.startCountdownTimer()
             trueVoice()
             setAnswerButtonsClickable(false)
         } else {
@@ -187,8 +129,8 @@ class PlayScreen : Fragment() {
             setBackButtonClickListener()
             continueWithTimer()
             currentAnswer()
-            playViewModel.cancelCountdownTimer()
-            playViewModel.startCountdownTimer()
+            viewModel.cancelCountdownTimer()
+            viewModel.startCountdownTimer()
             falseVoice()
             handleButtonCorrectAnswer()
         }
@@ -197,8 +139,8 @@ class PlayScreen : Fragment() {
     }
 
     private fun continueWithTimer() {
-        playViewModel.cancelCountdownTimer()
-        playViewModel.startCountdownTimer()
+        viewModel.cancelCountdownTimer()
+        viewModel.startCountdownTimer()
     }
 
     private fun currentAnswer() {
@@ -239,7 +181,7 @@ class PlayScreen : Fragment() {
     private fun backToEntry(index: Int) {
         if (index == 0) {
             timeFinish()
-            playViewModel.cancelCountdownTimer()
+            viewModel.cancelCountdownTimer()
             timeFinishCount()
             timerFinishVoice()
         }
@@ -256,8 +198,8 @@ class PlayScreen : Fragment() {
     private fun timeFinishCount() {
         viewLifecycleOwner.lifecycleScope.launch {
             delay(1000)
-            playViewModel.startCountdownTimer()
-            playViewModel.getCachedQuestions()
+            viewModel.startCountdownTimer()
+            viewModel.getCachedQuestions()
 
         }
     }

@@ -7,6 +7,10 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -15,14 +19,15 @@ import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.ynemreuslu.birbilsen.data.Question
+import com.ynemreuslu.birbilsen.screen.entry.EntryScreenViewModel
 import com.ynemreuslu.birbilsen.util.AppConstants.FIREBASE_REFERENCE
 import com.ynemreuslu.birbilsen.util.AppConstants.QUESTIONS_CHILD
 import com.ynemreuslu.birbilsen.util.AppConstants.QUESTION_CACHE_KEY
 import com.ynemreuslu.birbilsen.util.AppConstants.SHARED_PREFERENCES_NAME
 
-class PlayViewModel(
-    application: Application,
-) : AndroidViewModel(application) {
+class PlayScreenViewModel(
+    private val  application: Application,
+) : ViewModel() {
 
     private val sharedPreferencesName = SHARED_PREFERENCES_NAME
     private val questionCacheKey = QUESTION_CACHE_KEY
@@ -79,7 +84,7 @@ class PlayViewModel(
 
     fun cacheQuestions(questionList: List<Question>) {
         val sharedPreferences =
-            getApplication<Application>().getSharedPreferences(
+         application.getSharedPreferences(
                 sharedPreferencesName,
                 Context.MODE_PRIVATE
             )
@@ -91,7 +96,7 @@ class PlayViewModel(
 
     fun getCachedQuestions(): List<Question>? {
         val sharedPreferences =
-            getApplication<Application>().getSharedPreferences(
+           application.getSharedPreferences(
                 sharedPreferencesName,
                 Context.MODE_PRIVATE
             )
@@ -127,5 +132,21 @@ class PlayViewModel(
     override fun onCleared() {
         super.onCleared()
         cancelCountdownTimer()
+    }
+
+    companion object {
+
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras
+            ): T {
+                val application = checkNotNull(extras[APPLICATION_KEY])
+                return PlayScreenViewModel(application) as T
+            }
+        }
+
+
     }
 }

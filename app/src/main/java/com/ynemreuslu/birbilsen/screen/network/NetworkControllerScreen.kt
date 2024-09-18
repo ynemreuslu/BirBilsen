@@ -56,10 +56,10 @@ class NetworkControllerScreen : Fragment() {
                 if (isConnection)
                     findNavController().navigate(R.id.action_networkControllerScreen_to_entryScreen)
 
-
-
             }
         }
+
+
 
     }
 

@@ -24,10 +24,8 @@ import com.ynemreuslu.birbilsen.databinding.FragmentSettingsScreenBinding
 
 class SettingsScreen : Fragment() {
 
-
     private var _binding: FragmentSettingsScreenBinding? = null
     private val binding get() = _binding!!
-    private val settingsViewModel: SettingsScreenViewModel by viewModels()
     private lateinit var sharedPreferences: SharedPreferences
 
 
@@ -42,18 +40,14 @@ class SettingsScreen : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        settingsViewModel.init(
-            requireContext(),
-            requireActivity(),
-            requireActivity().getSharedPreferences("app_settings", Context.MODE_PRIVATE)
-        )
+
+
+
         sharedPreferences =
             requireActivity().getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+
         initAdView()
         switchOnVoice()
-        sharedFriendsLinkApp()
-        appLinksButtons()
-        backButton()
 
     }
 
@@ -68,9 +62,7 @@ class SettingsScreen : Fragment() {
 
             val sharedPref = requireActivity().getSharedPreferences("app_settings", MODE_PRIVATE)
             with(sharedPref.edit()) {
-                putBoolean(
-                    "voice_setting", isChecked
-                )
+                putBoolean("voice_setting", isChecked)
                 commit()
             }
         }
@@ -78,13 +70,6 @@ class SettingsScreen : Fragment() {
         val savedVoiceSetting = sharedPref.getBoolean("voice_setting", false)
         binding.settingsScreenVoice.isChecked = savedVoiceSetting
 
-    }
-
-
-    private fun switchShared() {
-        val sharedPref = requireActivity().getSharedPreferences("app_settings", MODE_PRIVATE)
-        val savedVoiceSetting = sharedPref.getBoolean("voice_setting", false)
-        binding.settingsScreenVoice.isChecked = savedVoiceSetting
     }
 
 
@@ -98,27 +83,19 @@ class SettingsScreen : Fragment() {
     }
 
 
-    private fun backButton() {
-        binding.settingsBackButton.setOnClickListener {
-            findNavController().popBackStack()
-        }
-    }
-
-
-    private fun sharedFriendsLinkApp() {
+    private fun setupShareButton() {
         binding.settingsScreenShare.setOnClickListener {
-            val sendIntent: Intent = Intent().apply {
+            val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, "This is my text to send.")
+                putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.ynemreuslu.birbilsen")
                 type = "text/plain"
             }
-
             val shareIntent = Intent.createChooser(sendIntent, null)
             startActivity(shareIntent)
         }
     }
 
-    private fun appLinksButtons() {
+    private fun setupReviewButton() {
         binding.settingsScreenPoint.setOnClickListener {
             val manager = ReviewManagerFactory.create(requireContext())
             val request = manager.requestReviewFlow()
@@ -126,39 +103,14 @@ class SettingsScreen : Fragment() {
                 if (task.isSuccessful) {
                     val reviewInfo = task.result
                     val flow = manager.launchReviewFlow(requireActivity(), reviewInfo)
-                    flow.addOnCompleteListener {
-
-                    }
+                    flow.addOnCompleteListener { /* Handle completion */ }
                 } else {
-                    // There was some problem, log or handle the error code.
-                    @ReviewErrorCode val reviewErrorCode = (task.exception as ReviewException).errorCode
+                    // Handle error if necessary
+                    val reviewErrorCode = (task.exception as? ReviewException)?.errorCode
                 }
             }
         }
     }
-
-    fun Activity.launchInAppReview(
-        onComplete: (() -> Unit)? = null,
-    ) {
-        val reviewManager = ReviewManagerFactory.create(this)
-        val request = reviewManager.requestReviewFlow()
-        request.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val reviewInfo = task.result
-                val flow = reviewManager.launchReviewFlow(this, reviewInfo)
-                flow.addOnCompleteListener {
-                    // The flow has finished. The API doesn't indicate whether the user
-                    // reviewed or not, or even whether the review dialog was shown.
-                    // Therefore, no matter the result, continue with your app's flow.
-                    onComplete?.invoke()
-                }
-            } else {
-                // Log or handle error if you want to
-                onComplete?.invoke()
-            }
-        }
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
