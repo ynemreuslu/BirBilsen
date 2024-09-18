@@ -1,4 +1,4 @@
-# 🏆 Birbilsen - Quiz App
+#  Birbilsen - Quiz App
 
 **Birbilsen** is an app developed using Android technologies and Firebase. The app allows users to answer questions and interact with real-time data.
 
